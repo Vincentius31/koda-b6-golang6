@@ -1,47 +1,52 @@
-# 🍜 Aplikasi Antrian Pemesanan Makanan
+# 🍜 Food Ordering Queue Application
 
-Repositori ini berisi implementasi sistem antrian pemesanan makanan yang dikonversi dari JavaScript 3 Repositori ke **Golang** menggunakan Goroutines, Channels, dan WaitGroup.
+This repository contains an implementation of a food ordering queue system converted from 3 JavaScript repositories into **Golang** using Goroutines, Channels, and WaitGroup.
 
 ---
 
-## 📂 Struktur Kode
-Aplikasi ini menangani data berikut:
-| Nama Variabel | Tipe Data | Deskripsi |
+## 📂 Code Structure
+This application handles the following data:
+
+| Variable Name | Data Type | Description |
 | :--- | :--- | :--- |
-| `Name` | `string` | Nama pemesan makanan. |
-| `Wait` | `int` | Waktu tunggu dalam detik. |
+| `Name` | `string` | Name of the food customer. |
+| `Wait` | `int` | Waiting time in seconds. |
 
 ---
 
-## 🛠️ Penjelasan Kode
+## 🛠️ Code Explanation
 
 ### 1. Channels (`chan`)
-Channel digunakan sebagai wadah untuk mengirim data antara Goroutine.
-* **Deklarasi**: `queueChan := make(chan Person)` membuat saluran khusus untuk mengirim objek `Person`.
-* **Pengiriman**: `queueChan <- p` memasukkan data pesanan ke dalam antrian.
-* **Penerimaan**: `for p := range queueChan` di dalam Goroutine akan terus menunggu dan mengambil data dari channel selama channel tersebut belum ditutup.
+Channels are used as a medium to send data between Goroutines.
+
+* **Declaration**: `queueChan := make(chan Person)` creates a dedicated channel to send `Person` objects.  
+* **Sending**: `queueChan <- p` puts order data into the queue.  
+* **Receiving**: `for p := range queueChan` inside a Goroutine continuously waits for and retrieves data from the channel as long as it is not closed.
 
 ### 2. WaitGroup (`sync.WaitGroup`)
-WaitGroup berfungsi sebagai penghitung (counter) untuk memastikan aplikasi tidak berhenti sebelum semua proses asinkron selesai.
-* **`wg.Add(1)`**: Dipanggil setiap kali ada pesanan baru yang akan diproses (menambah antrian).
-* **`wg.Done()`**: Dipanggil menggunakan `defer` di dalam fungsi proses untuk memberitahu bahwa satu pesanan telah selesai.
-* **`wg.Wait()`**: Menahan *main program* agar tetap berjalan sampai seluruh counter kembali ke angka nol (semua pesanan selesai).
+A WaitGroup acts as a counter to ensure the application does not stop before all asynchronous processes are completed.
+
+* **`wg.Add(1)`**: Called whenever a new order is added to be processed (increments the counter).  
+* **`wg.Done()`**: Called using `defer` inside the processing function to signal that one order has finished.  
+* **`wg.Wait()`**: Keeps the main program running until the counter returns to zero (all orders are completed).
 
 ---
 
-## 💻 Cara Menjalankan
-1.  Buka terminal di VS Code.
-2.  Pastikan kode Go sudah ada di file `main.go`.
-3.  Jalankan perintah:
+## 💻 How to Run
+1. Open the terminal in VS Code.  
+2. Make sure the Go code is inside the `main.go` file.  
+3. Run the command:
+
     ```
     go run main.go
     ```
 
 ---
 
-## 📝 Logika Program
-Program akan memproses daftar pesanan secara berurutan:
-1.  **Validasi**: Jika nama tersedia, program mencetak status "Menunggu antrian...". Jika kosong, mencetak peringatan.
-2.  **Simulasi Waktu**: Menggunakan `time.Sleep` berdasarkan atribut `Wait` dari tiap person.
-3.  **Selesai**: Setelah semua pesanan diproses dan channel dikosongkan, pesan "Selesai" akan muncul sebagai penutup.
+## 📝 Program Logic
+The program processes the list of orders sequentially:
+
+1. **Validation**: If a name is provided, the program prints the status "Waiting in queue...". If empty, it prints a warning.  
+2. **Time Simulation**: Uses `time.Sleep` based on each person's `Wait` attribute.  
+3. **Completion**: After all orders are processed and the channel is empty, the message "Finished" will appear as the closing output.
 
