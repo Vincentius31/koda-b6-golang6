@@ -25,6 +25,31 @@ func processOrder(p Person, wg *sync.WaitGroup) {
 }
 
 func main() {
-	
+	persons := []Person{
+		{Name: "Koda", Wait: 5},
+		{Name: "Mamet", Wait: 4},
+		{Name: "Cath", Wait: 7},
+		{Name: "Kevin", Wait: 6},
+		{Name: "Mark", Wait: 8},
+	}
+
+	queueChan := make(chan Person)
+	var wg sync.WaitGroup
+
+	go func() {
+		for p := range queueChan {
+			processOrder(p, &wg)
+		}
+	}()
+
+	fmt.Println("Memulai antrian pemesanan...")
+	for _, p := range persons {
+		wg.Add(1)
+		queueChan <- p
+	}
+
+	wg.Wait()
+	close(queueChan)
+	fmt.Println("Selesai")
 }
 
